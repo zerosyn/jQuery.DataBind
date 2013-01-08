@@ -6,14 +6,14 @@ a simple jQuery MVVM plugin that you can control your doms without jQuery select
 
 * __Set binding of function-name/attribute-name pairs to element:__
 
-		<anytag data-bind="toggleBy: an_attr, text: a_method"></anytag>
+		<anytag data-bind="toggleBy: a_condition, text: a_method, attr@value: an_attr"></anytag>
 
 
-* __Extend jQuery the functions that used in your settings:__
+* __(Optional) Extend jQuery the functions that used in your settings:__
 
 		$.fn.toggleBy = function(cond){
 			var func = cond ? 'show' : 'hide';
-			return this.each(function(){ $J(this)[func](); });
+			return this.each(function(){ $(this)[func](); });
 		};
 
 
@@ -26,15 +26,21 @@ a simple jQuery MVVM plugin that you can control your doms without jQuery select
 	_If you call this function twice, the former one would be ineffective._
 
 
-* __Apply an attribute/value pair you want to use in the binding functions:__
+* __(Optional) Initialize the wrapper for process the data:__
 
-		$.applyBind('an_attr', false);
+		$.setWrapper(function(obj){
+			return { a_condition:function(){ return obj.an_attr > 0; } }
+		});
 
-	_In this case it equals:_ `$('anytag').toggleBy(false);`
+	_If there are same name functions/properties in wrapper and object, the value in object will be used prior._
 
 
 * __Apply an Object of attribute/value pairs:__
 
-		$.applyBind({ an_attr: true, a_method: function(){ return 'foo'; } });
+		$.applyBind({ an_attr: -1, a_method: function(){ return 'foo'; } });
 
-	_In this case it equals:_ `$('anytag').toggleBy(true).text('foo');`
+	_In this case it equals:_ `$('anytag').toggleBy(-1 > 0).text('foo').attr('value', -1);`
+
+## More usage
+
+You can see detailed usage in test page.

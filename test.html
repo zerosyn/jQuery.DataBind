@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="jquery.databind.js"></script>
+		<title>DataBind Test</title>
+	</head>
+	<body>
+		<input type="button" id="b1" value="RED">
+		<input type="button" id="b2" value="GREEN">
+		<input type="button" id="b3" value="HIDE">
+		<p><label>Status: </label><span data-bind="text: status"></span></p>
+		<div style="padding:20px;font-size:20px;" data-bind="toggleBy: visibility, text: label, css@background-color: color"></div>
+		<script>
+			$(function(){
+				var dft = { color: '#77f', visibility: 1, label: 'box' };
+				$('#b1').data({ color: '#f77', visibility: 1, label: function(){ return 'foo'; } });
+				$('#b2').data({ color: '#7f7', visibility: 1, label: 'bar', status: 'prior status in object' });
+				$('#b3').data({ visibility: 0 });
+
+				$.fn.toggleBy = function(cond){
+					var func = cond ? 'show' : 'hide';
+					return this.each(function(){
+						$(this)[func]();
+					});
+				};
+
+				$.initBind('bind');
+				$.setWrapper(function(obj){
+					return {
+						status:function(){
+							return obj.visibility ? 'display' : 'hidden';
+						}
+					}
+				});
+				$.applyBind( dft );
+
+				$('input').on('click', function(){
+					$.applyBind( $(this).data() );
+				});
+			});
+		</script>
+	</body>
+</html>
